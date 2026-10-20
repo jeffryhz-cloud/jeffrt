@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manual Ilustrado de GitHub: Registro, Repositorios y Gestión de Archivos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    code, pre { font-family: 'Fira Code', monospace; }
+    
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #090d16; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+    .step-card {
+      background-color: #0b0f19;
+      border: 1px solid #1e293b;
+      border-radius: 1rem;
+      padding: 1.75rem;
+      transition: all 0.2s ease-in-out;
+    }
+    .step-card:hover {
+      border-color: #334155;
+    }
+
+    .click-target {
+      background-color: #1e1b4b;
+      color: #c7d2fe;
+      border: 1px solid #4338ca;
+      padding: 0.1rem 0.4rem;
+      border-radius: 0.375rem;
+      font-weight: 700;
+      font-size: 0.85em;
+      display: inline-flex;
+      items-center: center;
+      gap: 0.25rem;
+    }
+
+    .ui-location {
+      color: #38bdf8;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-purple-500 selection:text-white">
+
+  <!-- Encabezado con Progreso -->
+  <header class="border-b border-slate-800 bg-slate-900/90 sticky top-0 z-50 backdrop-blur-md shadow-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="bg-gradient-to-tr from-purple-600 via-indigo-600 to-slate-900 p-2.5 rounded-xl text-white shadow-lg shadow-purple-500/20">
+          <i class="fa-brands fa-github text-2xl"></i>
+        </div>
+        <div>
+          <h1 class="font-extrabold text-lg text-white leading-tight flex items-center gap-2">
+            Academia GitHub <span class="text-[10px] uppercase font-mono bg-purple-950 text-purple-300 border border-purple-700/50 px-2 py-0.5 rounded-full font-bold">Manual Exhaustivo para Principiantes</span>
+          </h1>
+          <p class="text-xs text-slate-400">Teoría en profundidad y tutorial paso a paso interfaz por interfaz</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4 bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-2 w-full sm:w-auto justify-between sm:justify-start">
+        <div class="text-right">
+          <div class="text-[10px] uppercase font-semibold text-slate-400">Evaluación Global</div>
+          <div class="text-xs font-bold text-purple-400" id="header-score-text">0 / 8 Respondidas</div>
+        </div>
+        <div class="w-28 sm:w-32 bg-slate-800 h-2.5 rounded-full overflow-hidden border border-slate-700">
+          <div id="header-progress-bar" class="bg-gradient-to-r from-purple-500 via-indigo-500 to-emerald-400 h-full w-0 transition-all duration-500"></div>
+        </div>
+        <span id="header-score-badge" class="bg-slate-800 text-slate-300 text-xs font-mono px-2 py-1 rounded border border-slate-700 font-bold">0%</span>
+      </div>
+    </div>
+
+    <!-- Navegación por Pestañas de Módulos -->
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 flex overflow-x-auto gap-2 pt-2 border-t border-slate-800/60 no-scrollbar">
+      <button onclick="switchTab('m1')" id="tab-m1" class="tab-btn active border-b-2 border-purple-500 text-purple-400 bg-slate-800/60 px-4 py-2.5 text-xs font-semibold rounded-t-lg transition flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-user-plus text-purple-400 text-sm"></i>
+        <span>1. Registro e Inicio de Sesión</span>
+        <span id="m1-badge" class="bg-slate-950 text-slate-400 text-[10px] font-mono px-1.5 py-0.5 rounded-full border border-slate-800">0/3</span>
+      </button>
+
+      <button onclick="switchTab('m2')" id="tab-m2" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/30 px-4 py-2.5 text-xs font-semibold rounded-t-lg transition flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-folder-plus text-indigo-400 text-sm"></i>
+        <span>2. Creación de un Repositorio</span>
+        <span id="m2-badge" class="bg-slate-950 text-slate-400 text-[10px] font-mono px-1.5 py-0.5 rounded-full border border-slate-800">0/3</span>
+      </button>
+
+      <button onclick="switchTab('m3')" id="tab-m3" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/30 px-4 py-2.5 text-xs font-semibold rounded-t-lg transition flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-cloud-arrow-up text-emerald-400 text-sm"></i>
+        <span>3. Subida de Archivos e Integración</span>
+        <span id="m3-badge" class="bg-slate-950 text-slate-400 text-[10px] font-mono px-1.5 py-0.5 rounded-full border border-slate-800">0/2</span>
+      </button>
+
+      <button onclick="switchTab('resumen')" id="tab-resumen" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/30 px-4 py-2.5 text-xs font-semibold rounded-t-lg transition flex items-center gap-2 whitespace-nowrap ml-auto">
+        <i class="fa-solid fa-trophy text-amber-400 text-sm"></i>
+        <span>Resumen Global</span>
+      </button>
+    </nav>
+  </header>
+
+  <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-8">
+
+    <!-- MÓDULO 1: REGISTRO E INICIO DE SESIÓN -->
+    <div id="content-m1" class="tab-content space-y-8">
+      
+      <!-- Banner de módulo -->
+      <div class="bg-gradient-to-r from-purple-950/50 via-slate-900 to-slate-900 border border-purple-500/30 rounded-2xl p-6 sm:p-8 relative overflow-hidden shadow-2xl">
+        <div class="absolute -right-6 -bottom-6 text-purple-500/10 text-9xl font-bold select-none pointer-events-none">
+          <i class="fa-brands fa-github"></i>
+        </div>
+        <div class="relative z-10 space-y-3">
+          <div class="inline-flex items-center gap-2 text-purple-400 bg-purple-950/80 border border-purple-800/60 px-3 py-1 rounded-full text-xs font-semibold">
+            <i class="fa-solid fa-book-open"></i> Módulo 1: Fundamentos teóricos e inscripción
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Registro, Autenticación y Perfil en GitHub</h2>
+          <p class="text-slate-300 text-sm max-w-3xl leading-relaxed">
+            Comprende los conceptos clave detrás de la nube de desarrollo más grande del mundo y aprende, paso a paso, cómo navegar sus pantallas de alta de usuario.
+          </p>
+        </div>
+      </div>
+
+      <!-- TEORÍA EXTENSA MÓDULO 1 -->
+      <section class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-5 shadow-lg">
+        <h3 class="text-xl font-bold text-purple-400 flex items-center gap-2.5">
+          <i class="fa-solid fa-brain"></i> Fundamentos Teóricos: ¿Qué es Git, qué es GitHub y por qué lo necesitas?
+        </h3>
+        
+        <div class="space-y-4 text-xs sm:text-sm text-slate-300 leading-relaxed">
+          <p>
+            Para comprender GitHub como principiante, es fundamental distinguir entre dos herramientas que suelen confundirse pero cumplen funciones diferentes: <strong>Git</strong> y <strong>GitHub</strong>.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
+            <div class="bg-slate-950 p-4 rounded-xl border border-purple-900/40 space-y-2">
+              <h4 class="font-bold text-purple-300 text-sm flex items-center gap-2">
+                <i class="fa-solid fa-code-branch"></i> Git (El motor local)
+              </h4>
+              <p class="text-xs text-slate-400">
+                Es un <em>Sistema de Control de Versiones (VCS)</em> que se ejecuta de forma interna en tu computadora. Funciona como una máquina del tiempo para tu código: registra cada cambio, adición o eliminación de archivos, permitiéndote volver a cualquier versión del pasado si cometiste un error indeseado.
+              </p>
+            </div>
+
+            <div class="bg-slate-950 p-4 rounded-xl border border-indigo-900/40 space-y-2">
+              <h4 class="font-bold text-indigo-300 text-sm flex items-center gap-2">
+                <i class="fa-brands fa-github"></i> GitHub (La plataforma en la nube)
+              </h4>
+              <p class="text-xs text-slate-400">
+                Es un servicio web alojado en Internet que guarda tus archivos gestionados con Git. Piensa en él como un <strong>"Google Drive para programadores"</strong> o un portafolio digital donde empresas y reclutadores de todo el planeta pueden revisar tus habilidades y proyectos.
+              </p>
+            </div>
+          </div>
+
+          <h4 class="font-bold text-slate-200 text-sm pt-2">Anatomía de los elementos de tu cuenta:</h4>
+          <ul class="list-disc list-inside space-y-2 bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
+            <li><strong>El Perfil Público:</strong> Es tu carta de presentación profesional en la URL <code class="text-purple-300">github.com/tu-usuario</code>. Incluye tu biografía, enlaces a tus redes, foto de perfil y el historial de contribuciones.</li>
+            <li><strong>Métricas de Contribución (El gráfico verde):</strong> Cuadro que registra tu nivel de actividad diaria programando. Cada recuadro coloreado de verde representa un día en el que subiste código o colaboraste en un proyecto.</li>
+            <li><strong>Identificador Único (Username):</strong> Será tu marca personal. Todos los proyectos que crees estarán bajo tu nombre de usuario, por lo que debe ser legible, profesional y fácil de recordar.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- PROCEDIMIENTO PRÁCTICO DETALLADO MÓDULO 1 -->
+      <section class="space-y-6">
+        <h3 class="text-xl font-bold text-white flex items-center gap-2.5">
+          <i class="fa-solid fa-list-check text-purple-400"></i> Procedimiento Práctico: Paso a Paso en la Interfaz de Registro
+        </h3>
+
+        <!-- Paso 1 -->
+        <div class="step-card space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-3">
+              <span class="bg-purple-600/20 text-purple-400 border border-purple-500/40 font-mono font-bold text-xs px-3 py-1 rounded-lg">Paso 1.1</span>
+              <h4 class="text-base font-bold text-white">Navegación e Inicio del Flujo de Alta</h4>
+            </div>
+            <span class="text-xs text-slate-500 font-mono"><i class="fa-solid fa-desktop"></i> Pantalla Principal</span>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            Abre el navegador web de tu preferencia (Google Chrome, Mozilla Firefox, Edge o Safari) y escribe la siguiente dirección en la barra de URL: <code class="text-purple-300">https://github.com</code>.
+          </p>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+            <h5 class="text-xs font-bold text-slate-200 uppercase tracking-wider"><i class="fa-solid fa-hand-pointer text-purple-400"></i> Ubicación exacta del clic:</h5>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Dirige el cursor del ratón hacia la <span class="ui-location">esquina superior derecha de la pantalla</span>. Encontrarás dos botones situados uno al lado del otro:
+            </p>
+            <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside pl-2">
+              <li><span class="click-target"><i class="fa-solid fa-right-to-bracket"></i> Sign in</span> : <strong>NO hacer clic aquí</strong> si es tu primera vez (sirve únicamente para usuarios registrados).</li>
+              <li><span class="click-target"><i class="fa-solid fa-user-plus"></i> Sign up</span> : <strong>Haz clic sobre este botón</strong> (suele ser de color blanco o con un borde llamativo). Opcionalmente, en el centro de la pantalla principal verás una casilla que dice <em>"Enter your email"</em> junto a un botón verde grande que dice <span class="click-target">Sign up for GitHub</span>. Ambos botones conducen al mismo asistente.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Paso 2 -->
+        <div class="step-card space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-3">
+              <span class="bg-purple-600/20 text-purple-400 border border-purple-500/40 font-mono font-bold text-xs px-3 py-1 rounded-lg">Paso 1.2</span>
+              <h4 class="text-base font-bold text-white">Completar la Terminal Interactiva de Registro</h4>
+            </div>
+            <span class="text-xs text-slate-500 font-mono"><i class="fa-solid fa-terminal"></i> Pantalla de Asistente</span>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            Se abrirá un asistente con fondo oscuro y texto animado que irá solicitando tus datos uno por uno. Debes completar los campos presionando el botón <span class="click-target">Continue</span> tras escribir en cada casilla:
+          </p>
+
+          <div class="space-y-3">
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-1.5">
+              <div class="text-xs font-bold text-purple-300 flex items-center justify-between">
+                <span>1. Enter your email (Correo Electrónico)</span>
+                <span class="text-[10px] bg-purple-950 text-purple-400 px-2 py-0.5 rounded border border-purple-800">Campo Obligatorio</span>
+              </div>
+              <p class="text-xs text-slate-400">
+                Haz clic dentro de la casilla de texto y escribe tu dirección de correo activa (ejemplo: <code>estudiante@gmail.com</code>). Asegúrate de tener acceso a esta casilla en este momento. Presiona <span class="click-target">Continue</span>.
+              </p>
+            </div>
+
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-1.5">
+              <div class="text-xs font-bold text-purple-300 flex items-center justify-between">
+                <span>2. Create a password (Contraseña)</span>
+                <span class="text-[10px] bg-purple-950 text-purple-400 px-2 py-0.5 rounded border border-purple-800">Campo Obligatorio</span>
+              </div>
+              <p class="text-xs text-slate-400">
+                Escribe tu clave de seguridad. GitHub exige que tenga al menos <strong>15 caracteres de largo</strong>, o bien al menos <strong>8 caracteres que incluyan un número y una letra minúscula</strong>. Aparecerá un indicador de fuerza de contraseña. Presiona <span class="click-target">Continue</span>.
+              </p>
+            </div>
+
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-1.5">
+              <div class="text-xs font-bold text-purple-300 flex items-center justify-between">
+                <span>3. Enter a username (Nombre de usuario)</span>
+                <span class="text-[10px] bg-purple-950 text-purple-400 px-2 py-0.5 rounded border border-purple-800">Campo Obligatorio</span>
+              </div>
+              <p class="text-xs text-slate-400">
+                Escribe tu identificador público deseado (ejemplo: <code>carlos-dev-web</code>). Si el nombre ya está ocupado por otra persona en el mundo, la pantalla mostrará una advertencia en color rojo diciendo <em>"Username is not available"</em>. Si está libre, verás un check verde. Presiona <span class="click-target">Continue</span>.
+              </p>
+            </div>
+
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-1.5">
+              <div class="text-xs font-bold text-purple-300 flex items-center justify-between">
+                <span>4. Email preferences (Preferencias de anuncios)</span>
+                <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded border border-slate-700">Opcional</span>
+              </div>
+              <p class="text-xs text-slate-400">
+                El sistema te preguntará: <em>"Would you like to receive product updates and announcements via email?"</em>. Haz clic en la casilla de texto, escribe la letra <code class="text-emerald-300 font-bold">n</code> (para indicar No) o la letra <code class="text-emerald-300 font-bold">y</code> (para indicar Sí) y haz clic en <span class="click-target">Continue</span>.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paso 3 -->
+        <div class="step-card space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-3">
+              <span class="bg-purple-600/20 text-purple-400 border border-purple-500/40 font-mono font-bold text-xs px-3 py-1 rounded-lg">Paso 1.3</span>
+              <h4 class="text-base font-bold text-white">Verificación CAPTCHA y Confirmación de Email</h4>
+            </div>
+            <span class="text-xs text-slate-500 font-mono"><i class="fa-solid fa-shield-halved"></i> Seguridad</span>
+          </div>
+
+          <div class="space-y-3 text-xs sm:text-sm text-slate-300 leading-relaxed">
+            <p>
+              1. <strong>Resolver el CAPTCHA:</strong> Aparecerá un recuadro interactivo titulado <em>"Verify your account"</em>. Haz clic en el botón <span class="click-target">Verify</span>. Se mostrará un acertijo visual (como girar una imagen con flechas hasta colocar un animal en la dirección correcta). Sigue las instrucciones de la pantalla y presiona <span class="click-target">Submit</span>.
+            </p>
+            <p>
+              2. <strong>Crear la cuenta:</strong> Una vez aprobado el acertijo, el botón verde inferior etiquetado como <span class="click-target">Create account</span> se volverá activo. Haz clic sobre él.
+            </p>
+            <p>
+              3. <strong>Ingresar el código de 8 dígitos:</strong> La pantalla cambiará automáticamente mostrando 8 casillas vacías bajo la frase <em>"Enter code"</em>. Abre una pestaña nueva en tu navegador, ingresa a tu correo electrónico personal y abre el mensaje enviado por GitHub con el asunto <em>"Your GitHub launch code"</em>. Copia los 8 dígitos numéricos y escríbelos directamente en las casillas. ¡La pantalla se actualizará e ingresarás de forma exitosa a tu panel principal!
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CUESTIONARIO MÓDULO 1 -->
+      <section class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6 shadow-2xl">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+          <div>
+            <h3 class="text-xl font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-clipboard-check text-purple-400"></i> Evaluación Teórica y Práctica: Módulo 1
+            </h3>
+            <p class="text-xs text-slate-400">Responde las 3 preguntas sobre el proceso de registro e interfaz.</p>
+          </div>
+          <span class="bg-purple-950 text-purple-300 text-xs font-mono font-bold px-3 py-1 rounded-full border border-purple-800">3 Preguntas</span>
+        </div>
+
+        <div id="quiz-m1-container" class="space-y-6"></div>
+      </section>
+
+      <div class="flex justify-end">
+        <button onclick="switchTab('m2')" class="bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold px-6 py-3 rounded-xl transition flex items-center gap-2 shadow-lg shadow-purple-600/30">
+          <span>Ir al Módulo 2: Creación de Repositorio</span> <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- MÓDULO 2: CREACIÓN DE UN REPOSITORIO -->
+    <div id="content-m2" class="tab-content space-y-8 hidden">
+      
+      <!-- Banner Módulo 2 -->
+      <div class="bg-gradient-to-r from-indigo-950/50 via-slate-900 to-slate-900 border border-indigo-500/30 rounded-2xl p-6 sm:p-8 relative overflow-hidden shadow-2xl">
+        <div class="absolute -right-6 -bottom-6 text-indigo-500/10 text-9xl font-bold select-none pointer-events-none">
+          <i class="fa-solid fa-folder-open"></i>
+        </div>
+        <div class="relative z-10 space-y-3">
+          <div class="inline-flex items-center gap-2 text-indigo-400 bg-indigo-950/80 border border-indigo-800/60 px-3 py-1 rounded-full text-xs font-semibold">
+            <i class="fa-solid fa-book-open"></i> Módulo 2: Arquitectura del Proyecto
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Anatomía y Configuración de un Repositorio</h2>
+          <p class="text-slate-300 text-sm max-w-3xl leading-relaxed">
+            Aprende qué es conceptualmente un repositorio, cuáles son las diferencias de privacidad y cómo configurar la interfaz de creación.
+          </p>
+        </div>
+      </div>
+
+      <!-- TEORÍA EXTENSA MÓDULO 2 -->
+      <section class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-5 shadow-lg">
+        <h3 class="text-xl font-bold text-indigo-400 flex items-center gap-2.5">
+          <i class="fa-solid fa-brain"></i> Fundamentos Teóricos: ¿Qué compone exactamente a un Repositorio?
+        </h3>
+        
+        <div class="space-y-4 text-xs sm:text-sm text-slate-300 leading-relaxed">
+          <p>
+            En la ingeniería de software, un <strong>Repositorio</strong> es una estructura de almacenamiento que alberga todos los recursos de un proyecto (archivos HTML, hojas CSS, scripts JS, imágenes, tipografías y bases de datos) junto con el historial completo de revisiones efectuadas por los desarrolladores.
+          </p>
+
+          <h4 class="font-bold text-slate-200 text-sm pt-2">Elementos clave de configuración al crear un Repositorio:</h4>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+              <h5 class="font-bold text-indigo-300 text-xs uppercase tracking-wider"><i class="fa-solid fa-globe"></i> 1. Tipo de Visibilidad</h5>
+              <ul class="text-xs text-slate-400 space-y-2 list-disc list-inside">
+                <li><strong>Public (Público):</strong> Cualquier persona con acceso a Internet puede ver la estructura, descargar el código o clonar el proyecto. Es la opción estándar obligatoria para estudiantes que desean mostrar proyectos a empleadores.</li>
+                <li><strong>Private (Privado):</strong> El repositorio es invisible para el público general. Solo tú y las cuentas de usuario a las que envíes una invitación de colaborador podrán ver o modificar el contenido.</li>
+              </ul>
+            </div>
+
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+              <h5 class="font-bold text-indigo-300 text-xs uppercase tracking-wider"><i class="fa-solid fa-file-code"></i> 2. Archivos de Inicialización</h5>
+              <ul class="text-xs text-slate-400 space-y-2 list-disc list-inside">
+                <li><strong>README.md (Lectura Obligatoria):</strong> Es un documento en formato Markdown que se muestra como portada del proyecto. Permite incluir capturas de pantalla, explicaciones de instalación y créditos.</li>
+                <li><strong>.gitignore:</strong> Un archivo de texto que le indica a Git qué archivos locales NO debe subir jamás a la nube (como contraseñas, carpetas temporales o librerías pesadas).</li>
+                <li><strong>License (Licencia de software):</strong> Define legalmente qué pueden y qué no pueden hacer otros programadores con tu código (por ejemplo, Licencia MIT si permites libre uso).</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROCEDIMIENTO PRÁCTICO DETALLADO MÓDULO 2 -->
+      <section class="space-y-6">
+        <h3 class="text-xl font-bold text-white flex items-center gap-2.5">
+          <i class="fa-solid fa-list-check text-indigo-400"></i> Procedimiento Práctico: Creación del Proyecto Paso a Paso
+        </h3>
+
+        <!-- Paso 1 -->
+        <div class="step-card space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-3">
+              <span class="bg-indigo-600/20 text-indigo-400 border border-indigo-500/40 font-mono font-bold text-xs px-3 py-1 rounded-lg">Paso 2.1</span>
+              <h4 class="text-base font-bold text-white">Localizar el Botón de Creación en el Panel de Control</h4>
+            </div>
+            <span class="text-xs text-slate-500 font-mono"><i class="fa-solid fa-house"></i> Dashboard Principal</span>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            Estando dentro de tu cuenta en <code class="text-indigo-300">github.com</code>, existen dos ubicaciones exactas en la pantalla para iniciar la creación de tu carpeta de proyecto:
+          </p>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+            <h5 class="text-xs font-bold text-slate-200 uppercase tracking-wider"><i class="fa-solid fa-hand-pointer text-indigo-400"></i> Opciones de pantalla disponibles:</h5>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-300">
+              <div class="bg-slate-900 p-3 rounded-lg border border-slate-800">
+                <strong>Opción A (Panel Lateral Izquierdo):</strong><br>
+                En la sección superior izquierda rotulada como <em>"Top Repositories"</em>, haz clic sobre el botón verde brillante que dice <span class="click-target"><i class="fa-solid fa-plus"></i> New</span>.
+              </div>
+              <div class="bg-slate-900 p-3 rounded-lg border border-slate-800">
+                <strong>Opción B (Barra Superior de Navegación):</strong><br>
+                En la <span class="ui-location">esquina superior derecha</span>, haz clic en el ícono del signo de más <span class="click-target"><i class="fa-solid fa-plus"></i></span> junto a tu avatar y selecciona del menú desplegable la opción <span class="click-target"><i class="fa-solid fa-book"></i> New repository</span>.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paso 2 -->
+        <div class="step-card space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-3">
+              <span class="bg-indigo-600/20 text-indigo-400 border border-indigo-500/40 font-mono font-bold text-xs px-3 py-1 rounded-lg">Paso 2.2</span>
+              <h4 class="text-base font-bold text-white">Completar el Formulario "Create a new repository"</h4>
+            </div>
+            <span class="text-xs text-slate-500 font-mono"><i class="fa-solid fa-sliders"></i> Configuración</span>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            Se abrirá una nueva pantalla con varios campos de configuración. Sigue detalladamente el llenado de cada uno:
+          </p>
+
+          <div class="space-y-3.5">
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+              <div class="text-xs font-bold text-indigo-300 flex items-center justify-between">
+                <span>1. Campo "Repository name"</span>
+                <span class="text-[10px] bg-purple-950 text-purple-400 px-2 py-0.5 rounded border border-purple-800">Campo Obligatorio</span>
+              </div>
+              <p class="text-xs text-slate-400">
+                Haz clic en la casilla vacía debajo de <em>"Repository name *"</em>. Escribe el nombre de tu proyecto en minúsculas separando palabras con guiones (ejemplo: <code class="text-emerald-300 font-bold">mi-primer-sitio-web</code>). Aparecerá una marca de verificación verde a la derecha indicando que el nombre es válido.
+              </p>
+            </div>
+
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+              <div class="text-xs font-bold text-indigo-300 flex items-center justify-between">
+                <span>2. Campo "Description"</span>
+                <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded border border-slate-700">Opcional</span>
+              </div>
+              <p class="text-xs text-slate-400">
+                Haz clic en la casilla larga de abajo y escribe una descripción breve (ejemplo: <code>"Proyecto de práctica de la agencia de turismo usando HTML5, CSS3 y JS"</code>).
+              </p>
+            </div>
+
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+              <div class="text-xs font-bold text-indigo-300">3. Selección de Visibilidad (Radio Buttons)</div>
+              <p class="text-xs text-slate-400">
+                Encontrarás dos opciones circulares para seleccionar:
+              </p>
+              <div class="space-y-2 pl-2 text-xs">
+                <label class="flex items-start gap-2 text-slate-300 cursor-pointer">
+                  <input type="radio" name="vis_demo" checked disabled class="mt-1">
+                  <div>
+                    <strong class="text-white">Public:</strong> Selecciona esta casilla (marcada por defecto). Permite que tu profesor, compañeros y futuros empleadores revisen tu sitio web.
+                  </div>
+                </label>
+                <label class="flex items-start gap-2 text-slate-400 cursor-pointer">
+                  <input type="radio" name="vis_demo" disabled class="mt-1">
+                  <div>
+                    <strong class="text-slate-300">Private:</strong> Selecciona esta casilla solo si es un proyecto confidencial.
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+              <div class="text-xs font-bold text-indigo-300">4. Sección "Initialize this repository with:"</div>
+              <p class="text-xs text-slate-400">
+                Baja ligeramente la pantalla hasta ver la casilla con cuadro de verificación rotulada como:
+              </p>
+              <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-xs text-slate-200 font-semibold flex items-center gap-3">
+                <input type="checkbox" checked disabled class="rounded text-purple-600">
+                <span>Add a README file</span>
+              </div>
+              <p class="text-xs text-slate-400">
+                <strong>Paso Crítico:</strong> Haz clic dentro de esta casilla de verificación para marcarla con un gancho. Esto creará inmediatamente la estructura básica del repositorio y evitará tener que usar comandos de terminal complejos.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paso 3 -->
+        <div class="step-card space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-3">
+              <span class="bg-indigo-600/20 text-indigo-400 border border-indigo-500/40 font-mono font-bold text-xs px-3 py-1 rounded-lg">Paso 2.3</span>
+              <h4 class="text-base font-bold text-white">Ejecutar la Creación</h4>
+            </div>
+            <span class="text-xs text-slate-500 font-mono"><i class="fa-solid fa-check-double"></i> Confirmación</span>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            Baja hasta el fondo de la pantalla y ubica el botón de gran tamaño marcado como <span class="click-target"><i class="fa-solid fa-folder-plus"></i> Create repository</span>.
+          </p>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            Haz clic sobre este botón verde. La pantalla procesará los datos durante un par de segundos y te redirigirá a la URL oficial de tu nuevo proyecto: <code class="text-indigo-300">github.com/tu-usuario/mi-primer-sitio-web</code>.
+          </p>
+        </div>
+      </section>
+
+      <!-- CUESTIONARIO MÓDULO 2 -->
+      <section class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6 shadow-2xl">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+          <div>
+            <h3 class="text-xl font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-clipboard-check text-indigo-400"></i> Evaluación Teórica y Práctica: Módulo 2
+            </h3>
+            <p class="text-xs text-slate-400">Responde las 3 preguntas sobre la creación de repositorios.</p>
+          </div>
+          <span class="bg-indigo-950 text-indigo-300 text-xs font-mono font-bold px-3 py-1 rounded-full border border-indigo-800">3 Preguntas</span>
+        </div>
+
+        <div id="quiz-m2-container" class="space-y-6"></div>
+      </section>
+
+      <div class="flex justify-between">
+        <button onclick="switchTab('m1')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold px-6 py-3 rounded-xl transition flex items-center gap-2">
+          <i class="fa-solid fa-arrow-left"></i> <span>Módulo Anterior</span>
+        </button>
+        <button onclick="switchTab('m3')" class="bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold px-6 py-3 rounded-xl transition flex items-center gap-2 shadow-lg shadow-purple-600/30">
+          <span>Ir al Módulo 3: Subida de Archivos</span> <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- MÓDULO 3: SUBIDA DE ARCHIVOS Y COMMITS -->
+    <div id="content-m3" class="tab-content space-y-8 hidden">
+      
+      <!-- Banner Módulo 3 -->
+      <div class="bg-gradient-to-r from-emerald-950/50 via-slate-900 to-slate-900 border border-emerald-500/30 rounded-2xl p-6 sm:p-8 relative overflow-hidden shadow-2xl">
+        <div class="absolute -right-6 -bottom-6 text-emerald-500/10 text-9xl font-bold select-none pointer-events-none">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+        </div>
+        <div class="relative z-10 space-y-3">
+          <div class="inline-flex items-center gap-2 text-emerald-400 bg-emerald-950/80 border border-emerald-800/60 px-3 py-1 rounded-full text-xs font-semibold">
+            <i class="fa-solid fa-book-open"></i> Módulo 3: Publicación y Control de Versiones
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Subida de Archivos vía Web, la Regla del Index y el Concepto de Commit</h2>
+          <p class="text-slate-300 text-sm max-w-3xl leading-relaxed">
+            Comprende los fundamentos del registro de cambios (Commits), la importancia del archivo raíz y aprende la secuencia exacta de clics para cargar tus carpetas de código.
+          </p>
+        </div>
+      </div>
+
+      <!-- TEORÍA EXTENSA MÓDULO 3 -->
+      <section class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-5 shadow-lg">
+        <h3 class="text-xl font-bold text-emerald-400 flex items-center gap-2.5">
+          <i class="fa-solid fa-brain"></i> Fundamentos Teóricos: ¿Qué es un Commit y cómo funciona el servidor web?
+        </h3>
+        
+        <div class="space-y-4 text-xs sm:text-sm text-slate-300 leading-relaxed">
+          <p>
+            Al trabajar en proyectos de tecnología, guardar un archivo no es simplemente sobrescribir un documento. GitHub utiliza un modelo de congelamiento de estado llamado <strong>Commit</strong>.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-2">
+            <div class="bg-slate-950 p-4 rounded-xl border border-emerald-900/40 space-y-2">
+              <h4 class="font-bold text-emerald-300 text-sm flex items-center gap-2">
+                <i class="fa-solid fa-camera"></i> El Concepto de Commit (Instantánea)
+              </h4>
+              <p class="text-xs text-slate-400">
+                Un <strong>Commit</strong> es una captura fotográfica del estado exacto de todos tus archivos en un instante dado. Cada Commit posee un identificador hash único, una fecha, el nombre del autor y un <em>mensaje explicativo</em> que justifica qué cambios se realizaron.
+              </p>
+            </div>
+
+            <div class="bg-slate-950 p-4 rounded-xl border border-amber-900/40 space-y-2">
+              <h4 class="font-bold text-amber-300 text-sm flex items-center gap-2">
+                <i class="fa-solid fa-star"></i> La Regla de Oro del Archivo index.html
+              </h4>
+              <p class="text-xs text-slate-400">
+                Los servidores web de todo el planeta están programados para buscar de forma automática un archivo maestro llamado exactamente <code class="text-amber-300 font-bold">index.html</code> en la raíz del proyecto. Si nombras a tu página principal de otra forma (como <code>pagina1.html</code> o <code>inicio.html</code>), el servidor no sabrá qué mostrar y devolverá un error de lectura.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROCEDIMIENTO PRÁCTICO DETALLADO MÓDULO 3 -->
+      <section class="space-y-6">
+        <h3 class="text-xl font-bold text-white flex items-center gap-2.5">
+          <i class="fa-solid fa-list-check text-emerald-400"></i> Procedimiento Práctico: Carga de la Página de Turismo
+        </h3>
+
+        <!-- Paso 1 -->
+        <div class="step-card space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-3">
+              <span class="bg-emerald-600/20 text-emerald-400 border border-emerald-500/40 font-mono font-bold text-xs px-3 py-1 rounded-lg">Paso 3.1</span>
+              <h4 class="text-base font-bold text-white">Navegar a la Zona de Carga Web</h4>
+            </div>
+            <span class="text-xs text-slate-500 font-mono"><i class="fa-solid fa-folder-tree"></i> Vista de Código</span>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            Estando dentro de tu repositorio (<code class="text-indigo-300">github.com/tu-usuario/mi-primer-sitio-web</code>):
+          </p>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+            <h5 class="text-xs font-bold text-slate-200 uppercase tracking-wider"><i class="fa-solid fa-hand-pointer text-emerald-400"></i> Ubicación exacta de la herramienta:</h5>
+            <ol class="text-xs text-slate-300 space-y-2 list-decimal list-inside pl-2">
+              <li>
+                Dirige la mirada al panel central donde se lista el archivo <code class="text-purple-300">README.md</code>. Justo en la <span class="ui-location">esquina superior derecha de esa tabla</span>, ubica el botón de color gris que dice <span class="click-target"><i class="fa-solid fa-file-circle-plus"></i> Add file</span>.
+              </li>
+              <li>
+                Haz clic sobre el botón <span class="click-target">Add file</span>. Se desplegará un menú emergente con dos opciones: <em>"Create new file"</em> y <em>"Upload files"</em>.
+              </li>
+              <li>
+                Haz clic en la segunda opción: <span class="click-target"><i class="fa-solid fa-upload"></i> Upload files</span>.
+              </li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- Paso 2 -->
+        <div class="step-card space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-3">
+              <span class="bg-emerald-600/20 text-emerald-400 border border-emerald-500/40 font-mono font-bold text-xs px-3 py-1 rounded-lg">Paso 3.2</span>
+              <h4 class="text-base font-bold text-white">Arrastrar los Archivos del Proyecto de Turismo</h4>
+            </div>
+            <span class="text-xs text-slate-500 font-mono"><i class="fa-solid fa-file-import"></i> Zona de Arrastre</span>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            La pantalla cambiará mostrando un recuadro de gran tamaño delimitado por líneas de puntos con la frase <em>"Drag files here to add them to your repository"</em>.
+          </p>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+            <h5 class="text-xs font-bold text-slate-200 uppercase tracking-wider"><i class="fa-solid fa-folder-open text-emerald-400"></i> Carga mediante Arrastre de Ratón:</h5>
+            <ol class="text-xs text-slate-300 space-y-2 list-decimal list-inside pl-2">
+              <li>Abre el explorador de archivos de tu computadora y entra a la carpeta donde guardaste tu proyecto de turismo (<code class="text-slate-300">turismo-web</code>).</li>
+              <li>
+                Selecciona con el ratón al mismo tiempo los siguientes elementos:
+                <ul class="list-disc list-inside pl-6 pt-1 text-slate-400 space-y-1">
+                  <li>El archivo de estructura: <code class="text-orange-400">index.html</code></li>
+                  <li>El archivo de diseño: <code class="text-blue-400">styles.css</code></li>
+                  <li>El archivo de interactividad: <code class="text-yellow-400">script.js</code></li>
+                  <li>La carpeta de fotografías completa: <code class="text-emerald-400">imagenes/</code> (que contiene <code>carrusel1.jpg</code>, <code>carrusel2.jpg</code>, etc.)</li>
+                </ul>
+              </li>
+              <li>Mantén presionado el clic izquierdo, arrastra los elementos hacia la zona de líneas punteadas en el navegador y suelta el botón del ratón.</li>
+              <li>Verás una lista de progreso abajo donde cada archivo cargado mostrará una barra de avance hasta completarse.</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- Paso 3 -->
+        <div class="step-card space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-3">
+              <span class="bg-emerald-600/20 text-emerald-400 border border-emerald-500/40 font-mono font-bold text-xs px-3 py-1 rounded-lg">Paso 3.3</span>
+              <h4 class="text-base font-bold text-white">Completar la Seccion "Commit changes"</h4>
+            </div>
+            <span class="text-xs text-slate-500 font-mono"><i class="fa-solid fa-floppy-disk"></i> Guardado Oficial</span>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            Una vez finalizada la carga visual de la lista de archivos, desciende con el scroll del ratón hacia la parte inferior de la pantalla hasta llegar al recuadro titulado <strong>"Commit changes"</strong>:
+          </p>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+            <div class="space-y-2 text-xs">
+              <label class="block text-emerald-300 font-bold uppercase">1. Casilla de Mensaje Principal (Commit Message):</label>
+              <p class="text-slate-400">
+                Haz clic en el cuadro de texto superior (que contiene un texto gris sugerido por defecto). Escribe un mensaje descriptivo y profesional (ejemplo: <code class="text-emerald-300">"Agregando código inicial del proyecto de turismo con carrusel de imágenes"</code>).
+              </p>
+
+              <label class="block text-emerald-300 font-bold uppercase pt-2">2. Botón de Confirmación:</label>
+              <p class="text-slate-400">
+                Haz clic sobre el botón verde ubicado abajo a la izquierda etiquetado como <span class="click-target"><i class="fa-solid fa-check"></i> Commit changes</span>.
+              </p>
+            </div>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            El sistema procesará la subida y te redirigirá a la vista principal. Verás la lista con tus archivos <code class="text-orange-300">index.html</code>, <code class="text-blue-300">styles.css</code>, <code class="text-yellow-300">script.js</code> y la carpeta de imágenes perfectamente organizados y guardados en la nube.
+          </p>
+        </div>
+      </section>
+
+      <!-- CUESTIONARIO MÓDULO 3 -->
+      <section class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6 shadow-2xl">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+          <div>
+            <h3 class="text-xl font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-clipboard-check text-emerald-400"></i> Evaluación Teórica y Práctica: Módulo 3
+            </h3>
+            <p class="text-xs text-slate-400">Responde las 2 preguntas sobre la subida de archivos y el commit.</p>
+          </div>
+          <span class="bg-emerald-950 text-emerald-300 text-xs font-mono font-bold px-3 py-1 rounded-full border border-emerald-800">2 Preguntas</span>
+        </div>
+
+        <div id="quiz-m3-container" class="space-y-6"></div>
+      </section>
+
+      <div class="flex justify-between">
+        <button onclick="switchTab('m2')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold px-6 py-3 rounded-xl transition flex items-center gap-2">
+          <i class="fa-solid fa-arrow-left"></i> <span>Módulo Anterior</span>
+        </button>
+        <button onclick="switchTab('resumen')" class="bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-6 py-3 rounded-xl transition flex items-center gap-2 shadow-lg shadow-amber-600/30">
+          <span>Ver Resumen de Resultados</span> <i class="fa-solid fa-trophy"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- PANTALLA RESUMEN GLOBAL -->
+    <div id="content-resumen" class="tab-content space-y-8 hidden">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-10 text-center space-y-6 shadow-2xl relative overflow-hidden">
+        <div class="inline-flex p-4 bg-purple-500/10 border border-purple-500/30 rounded-2xl text-purple-400 text-4xl mb-2">
+          <i class="fa-solid fa-award"></i>
+        </div>
+        <h2 class="text-3xl font-extrabold text-white">Resumen Global de Calificación</h2>
+        <p class="text-slate-400 text-sm max-w-xl mx-auto">
+          Resultados acumulados del cuestionario interactivo sobre teoría y procedimientos de GitHub.
+        </p>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto pt-4">
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+            <div class="text-2xl font-black text-purple-400" id="stat-total">0/8</div>
+            <div class="text-[10px] uppercase font-bold text-slate-400 mt-1">Respondidas</div>
+          </div>
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+            <div class="text-2xl font-black text-emerald-400" id="stat-correct">0</div>
+            <div class="text-[10px] uppercase font-bold text-slate-400 mt-1">Aciertos</div>
+          </div>
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+            <div class="text-2xl font-black text-rose-400" id="stat-incorrect">0</div>
+            <div class="text-[10px] uppercase font-bold text-slate-400 mt-1">Errores</div>
+          </div>
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+            <div class="text-2xl font-black text-amber-400" id="stat-score">0%</div>
+            <div class="text-[10px] uppercase font-bold text-slate-400 mt-1">Calificación</div>
+          </div>
+        </div>
+
+        <div class="max-w-xl mx-auto space-y-3 pt-4 text-left">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 text-center">Desglose Módulo por Módulo</h4>
+          
+          <div class="flex items-center justify-between text-xs bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+            <span class="flex items-center gap-2 text-purple-400 font-semibold"><i class="fa-solid fa-user-plus"></i> Módulo 1: Registro e Inicio de Sesión</span>
+            <span id="m1-summary-score" class="font-mono text-slate-300">0 / 3 Aciertos</span>
+          </div>
+
+          <div class="flex items-center justify-between text-xs bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+            <span class="flex items-center gap-2 text-indigo-400 font-semibold"><i class="fa-solid fa-folder-plus"></i> Módulo 2: Creación de Repositorio</span>
+            <span id="m2-summary-score" class="font-mono text-slate-300">0 / 3 Aciertos</span>
+          </div>
+
+          <div class="flex items-center justify-between text-xs bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+            <span class="flex items-center gap-2 text-emerald-400 font-semibold"><i class="fa-solid fa-cloud-arrow-up"></i> Módulo 3: Subida de Archivos y Commits</span>
+            <span id="m3-summary-score" class="font-mono text-slate-300">0 / 2 Aciertos</span>
+          </div>
+        </div>
+
+        <div class="pt-6">
+          <button onclick="resetAllQuizzes()" class="bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/40 text-xs font-bold px-6 py-3 rounded-xl transition inline-flex items-center gap-2">
+            <i class="fa-solid fa-rotate-right"></i> <span>Reiniciar Evaluación Completa</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="border-t border-slate-800 bg-slate-950 py-6 text-center text-xs text-slate-500">
+    Manual Didáctico Interactivo de GitHub &copy; Guía Detallada para Principiantes
+  </footer>
+
+  <script>
+    /* BANCO DE PREGUNTAS INTERACTIVAS CON RETROALIMENTACIÓN DETALLADA Y ESCAPADO DE CARACTERES */
+    const quizData = {
+      m1: [
+        {
+          id: "m1_q1",
+          question: "1. ¿Cuál es la diferencia conceptual clave entre Git y GitHub?",
+          options: [
+            { text: "Git es el sistema local de control de versiones en tu equipo y GitHub es la plataforma en la nube para alojar y compartir proyectos.", correct: true, reason: "¡Correcto! Git lleva el registro interno de versiones en tu computadora, mientras que GitHub almacena y expone tus archivos en la red mundial." },
+            { text: "Git es un editor de texto e imágenes y GitHub es un buscador de noticias de tecnología.", correct: false, reason: "Incorrecto. Ambas herramientas se dedican exclusivamente al desarrollo y control de código fuente." },
+            { text: "Git es de pago obligatorio y GitHub es un programa ejecutable de Windows.", correct: false, reason: "Incorrecto. Git es un software libre y de código abierto, y GitHub ofrece cuentas personales totalmente gratuitas." },
+            { text: "Son exactamente el mismo programa con distinto nombre comercial.", correct: false, reason: "Incorrecto. Git funciona de forma local en tu computadora independientemente de si usas o no la nube de GitHub." }
+          ]
+        },
+        {
+          id: "m1_q2",
+          question: "2. En la barra superior de la página principal de GitHub, ¿en qué botón específico debes hacer clic para iniciar el proceso de creación de una cuenta nueva?",
+          options: [
+            { text: "Sign in", correct: false, reason: "'Sign in' se utiliza únicamente para iniciar sesión si ya posees una cuenta registrada." },
+            { text: "Sign up", correct: true, reason: "¡Correcto! El botón 'Sign up' ubicado en la esquina superior derecha abre el asistente interactivo para nuevos usuarios." },
+            { text: "Pricing", correct: false, reason: "'Pricing' muestra los planes comerciales para empresas." },
+            { text: "Explore", correct: false, reason: "'Explore' permite navegar por proyectos públicos de otros usuarios." }
+          ]
+        },
+        {
+          id: "m1_q3",
+          question: "3. Durante el formulario de alta en GitHub, ¿qué ocurre si el 'Username' que escribes ya pertenece a otra persona en el mundo?",
+          options: [
+            { text: "La pantalla muestra un aviso en color rojo indicando que el nombre no está disponible y debes probar otra variación.", correct: true, reason: "¡Correcto! Los nombres de usuario son únicos a nivel mundial ya que definen la dirección web pública de tu perfil." },
+            { text: "El sistema borra automáticamente tu cuenta de correo.", correct: false, reason: "Incorrecto. Solo te solicita elegir un identificador distinto." },
+            { text: "Se le envía una notificación al propietario original para que te ceda el nombre.", correct: false, reason: "Incorrecto." },
+            { text: "El sistema te cobra un cargo extra para permitir el duplicado.", correct: false, reason: "Incorrecto." }
+          ]
+        }
+      ],
+      m2: [
+        {
+          id: "m2_q1",
+          question: "1. ¿Qué es un Repositorio en la arquitectura de software y GitHub?",
+          options: [
+            { text: "Una carpeta digital alojada en la nube que almacena todos los archivos de un proyecto junto con su historial de cambios.", correct: true, reason: "¡Correcto! El repositorio es el contenedor estandarizado para guardar la estructura, diseños, scripts e imágenes de una aplicación." },
+            { text: "El nombre de la clave de contraseña para entrar a tu perfil.", correct: false, reason: "Incorrecto." },
+            { text: "Una extensión del navegador para traducir páginas web.", correct: false, reason: "Incorrecto." },
+            { text: "Un archivo ejecutable que instala programas en la computadora.", correct: false, reason: "Incorrecto." }
+          ]
+        },
+        {
+          id: "m2_q2",
+          question: "2. Al configurar un repositorio para tu portafolio de estudios, ¿cuál es la ventaja de seleccionar la visibilidad 'Public'?",
+          options: [
+            { text: "Permite que cualquier reclutador, profesor o visitante en Internet pueda revisar tu código a través de tu URL.", correct: true, reason: "¡Correcto! Los repositorios públicos sirven para demostrar tus habilidades de programación al mundo." },
+            { text: "Hace que los archivos ocupen la mitad de espacio en tu disco duro.", correct: false, reason: "La visibilidad no altera la compresión de archivos." },
+            { text: "Elimina la necesidad de escribir la estructura HTML.", correct: false, reason: "Incorrecto." },
+            { text: "Oculta tus archivos para que nadie los pueda ver.", correct: false, reason: "Ese es el objetivo de los repositorios configurados como 'Private'." }
+          ]
+        },
+        {
+          id: "m2_q3",
+          question: "3. ¿Por qué es fundamental marcar la casilla 'Add a README file' al crear un nuevo repositorio en la interfaz web?",
+          options: [
+            { text: "Porque inicializa el repositorio con un documento de portada, permitiendo subir archivos mediante arrastre de ratón sin usar comandos de terminal.", correct: true, reason: "¡Correcto! Inicializar el proyecto con el archivo README.md genera la estructura activa que habilita la interfaz de carga de la web." },
+            { text: "Porque instala un antivirus automático dentro de tus archivos HTML.", correct: false, reason: "Incorrecto." },
+            { text: "Porque cambia el idioma de la computadora a español.", correct: false, reason: "Incorrecto." },
+            { text: "Porque le paga una comisión al desarrollador.", correct: false, reason: "Incorrecto." }
+          ]
+        }
+      ],
+      m3: [
+        {
+          id: "m3_q1",
+          question: "1. ¿Por qué el archivo principal de una aplicación web debe nombrarse exactamente 'index.html' en minúsculas?",
+          options: [
+            { text: "Porque los servidores web están programados para buscar automáticamente la palabra 'index.html' como punto de entrada y portada del sitio.", correct: true, reason: "¡Correcto! Es la convención universal de la Web. Si le das otro nombre (como 'inicio.html'), la dirección raíz dará un error de lectura." },
+            { text: "Porque GitHub elimina los archivos que no tengan ese nombre.", correct: false, reason: "GitHub almacena cualquier archivo, pero los navegadores no sabrán cuál es la portada por defecto." },
+            { text: "Porque las hojas de estilo CSS solo funcionan con archivos llamados index.", correct: false, reason: "CSS se enlaza a cualquier archivo HTML independientemente de su nombre." },
+            { text: "No hay ninguna razón, cualquier nombre funciona exactamente igual.", correct: false, reason: "El nombre 'index.html' es imprescindible para la resolución automática de URL en servidores." }
+          ]
+        },
+        {
+          id: "m3_q2",
+          question: "2. En el control de versiones con GitHub, ¿qué representa exactamente realizar un 'Commit'?",
+          options: [
+            { text: "Tomar una instantánea o fotografía del estado de tus archivos y registrar los cambios guardados con una nota explicativa.", correct: true, reason: "¡Correcto! Cada Commit crea un punto de restauración en el historial que registra qué autor hizo los cambios y en qué fecha." },
+            { text: "Borrar todos los archivos subidos para empezar de nuevo.", correct: false, reason: "Incorrecto. Un Commit guarda y asegura los cambios, no los destruye." },
+            { text: "Cerrar sesión de la cuenta de GitHub.", correct: false, reason: "Incorrecto." },
+            { text: "Descargar el proyecto comprimido en un archivo ZIP.", correct: false, reason: "Incorrecto." }
+          ]
+        }
+      ]
+    };
+
+    const userAnswers = {};
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderAllQuizzes();
+      updateGlobalMetrics();
+    });
+
+    function switchTab(tabId) {
+      document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
+      document.querySelectorAll(".tab-btn").forEach(el => {
+        el.classList.remove("active", "border-purple-500", "border-indigo-500", "border-emerald-500", "text-purple-400", "text-indigo-400", "text-emerald-400", "bg-slate-800/60");
+        el.classList.add("border-transparent", "text-slate-400");
+      });
+
+      document.getElementById(`content-${tabId}`).classList.remove("hidden");
+      const activeBtn = document.getElementById(`tab-${tabId}`);
+      
+      let borderCol = "border-purple-500";
+      if(tabId === 'm1') borderCol = "border-purple-500";
+      if(tabId === 'm2') borderCol = "border-indigo-500";
+      if(tabId === 'm3') borderCol = "border-emerald-500";
+
+      activeBtn.classList.add("active", borderCol, "text-slate-100", "bg-slate-800/60");
+      activeBtn.classList.remove("border-transparent", "text-slate-400");
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderAllQuizzes() {
+      ["m1", "m2", "m3"].forEach(modKey => {
+        const container = document.getElementById(`quiz-${modKey}-container`);
+        container.innerHTML = "";
+
+        quizData[modKey].forEach((q, qIndex) => {
+          const qBox = document.createElement("div");
+          qBox.className = "bg-slate-950/80 border border-slate-800 rounded-xl p-5 space-y-3.5";
+          qBox.id = `box-${q.id}`;
+
+          let optionsHtml = q.options.map((opt, optIndex) => `
+            <button 
+              id="btn-${q.id}-${optIndex}"
+              onclick="selectAnswer('${modKey}', '${q.id}', ${optIndex})"
+              class="w-full text-left p-3.5 rounded-xl border border-slate-800 bg-slate-900 hover:bg-slate-800/90 hover:border-slate-700 transition text-xs sm:text-sm text-slate-200 flex justify-between items-center group cursor-pointer"
+            >
+              <span class="pr-2 font-medium leading-relaxed">${opt.text}</span>
+              <span id="icon-${q.id}-${optIndex}" class="text-slate-600 group-hover:text-slate-400 transition flex-shrink-0"><i class="fa-regular fa-circle"></i></span>
+            </button>
+          `).join('');
+
+          qBox.innerHTML = `
+            <div class="flex items-start justify-between gap-3">
+              <h4 class="font-semibold text-slate-100 text-sm sm:text-base leading-snug">${q.question}</h4>
+            </div>
+            <div class="grid grid-cols-1 gap-2.5 pt-1">
+              ${optionsHtml}
+            </div>
+            <div id="feedback-${q.id}" class="hidden p-3.5 rounded-xl text-xs font-medium border leading-relaxed mt-2"></div>
+          `;
+
+          container.appendChild(qBox);
+        });
+      });
+    }
+
+    function selectAnswer(modKey, qId, selectedIdx) {
+      if (userAnswers[qId] !== undefined) return;
+
+      const qData = quizData[modKey].find(item => item.id === qId);
+      const selectedOpt = qData.options[selectedIdx];
+      
+      userAnswers[qId] = {
+        modKey: modKey,
+        isCorrect: selectedOpt.correct,
+        selectedIdx: selectedIdx
+      };
+
+      qData.options.forEach((opt, idx) => {
+        const btn = document.getElementById(`btn-${qId}-${idx}`);
+        const icon = document.getElementById(`icon-${qId}-${idx}`);
+        btn.disabled = true;
+        btn.classList.remove("hover:bg-slate-800/90", "hover:border-slate-700", "cursor-pointer");
+
+        if (idx === selectedIdx) {
+          if (selectedOpt.correct) {
+            btn.className = "w-full text-left p-3.5 rounded-xl border border-emerald-500/80 bg-emerald-950/70 text-emerald-100 text-xs sm:text-sm font-medium flex justify-between items-center";
+            icon.className = "text-emerald-400 text-base flex-shrink-0";
+            icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+          } else {
+            btn.className = "w-full text-left p-3.5 rounded-xl border border-rose-500/80 bg-rose-950/70 text-rose-100 text-xs sm:text-sm font-medium flex justify-between items-center";
+            icon.className = "text-rose-400 text-base flex-shrink-0";
+            icon.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
+          }
+        } else {
+          btn.classList.add("opacity-40");
+          if (!selectedOpt.correct && opt.correct) {
+            btn.classList.remove("opacity-40");
+            btn.classList.add("border-emerald-700/60", "text-emerald-300");
+            icon.className = "text-emerald-400 flex-shrink-0";
+            icon.innerHTML = '<i class="fa-solid fa-check"></i>';
+          }
+        }
+      });
+
+      const feedback = document.getElementById(`feedback-${qId}`);
+      feedback.classList.remove("hidden");
+      if (selectedOpt.correct) {
+        feedback.className = "p-3.5 rounded-xl text-xs font-medium border leading-relaxed mt-2 bg-emerald-950/80 border-emerald-800/80 text-emerald-300";
+        feedback.innerHTML = `<div class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-emerald-400 text-base mt-0.5 flex-shrink-0"></i> <div><strong>¡Respuesta Correcta!</strong> ${selectedOpt.reason}</div></div>`;
+      } else {
+        feedback.className = "p-3.5 rounded-xl text-xs font-medium border leading-relaxed mt-2 bg-rose-950/80 border-rose-800/80 text-rose-300";
+        feedback.innerHTML = `<div class="flex items-start gap-2.5"><i class="fa-solid fa-circle-xmark text-rose-400 text-base mt-0.5 flex-shrink-0"></i> <div><strong>Respuesta Incorrecta:</strong> ${selectedOpt.reason}</div></div>`;
+      }
+
+      updateGlobalMetrics();
+    }
+
+    function updateGlobalMetrics() {
+      const totalQuestions = 8;
+      const answeredKeys = Object.keys(userAnswers);
+      const answeredCount = answeredKeys.length;
+      
+      let correctCount = 0;
+      const moduleCorrect = { m1: 0, m2: 0, m3: 0 };
+      const moduleAnswered = { m1: 0, m2: 0, m3: 0 };
+
+      answeredKeys.forEach(qId => {
+        const item = userAnswers[qId];
+        moduleAnswered[item.modKey]++;
+        if (item.isCorrect) {
+          correctCount++;
+          moduleCorrect[item.modKey]++;
+        }
+      });
+
+      const incorrectCount = answeredCount - correctCount;
+      const percentage = Math.round((correctCount / totalQuestions) * 100);
+
+      document.getElementById("header-score-text").innerText = `${answeredCount} / ${totalQuestions} Respondidas`;
+      document.getElementById("header-progress-bar").style.width = `${(answeredCount / totalQuestions) * 100}%`;
+      document.getElementById("header-score-badge").innerText = `${percentage}%`;
+
+      document.getElementById("m1-badge").innerText = `${moduleAnswered.m1}/3`;
+      if (moduleAnswered.m1 === 3) document.getElementById("m1-badge").className = "bg-emerald-950 text-emerald-300 text-[10px] font-mono px-1.5 py-0.5 rounded-full border border-emerald-700 font-bold";
+
+      document.getElementById("m2-badge").innerText = `${moduleAnswered.m2}/3`;
+      if (moduleAnswered.m2 === 3) document.getElementById("m2-badge").className = "bg-emerald-950 text-emerald-300 text-[10px] font-mono px-1.5 py-0.5 rounded-full border border-emerald-700 font-bold";
+
+      document.getElementById("m3-badge").innerText = `${moduleAnswered.m3}/2`;
+      if (moduleAnswered.m3 === 2) document.getElementById("m3-badge").className = "bg-emerald-950 text-emerald-300 text-[10px] font-mono px-1.5 py-0.5 rounded-full border border-emerald-700 font-bold";
+
+      document.getElementById("stat-total").innerText = `${answeredCount}/8`;
+      document.getElementById("stat-correct").innerText = correctCount;
+      document.getElementById("stat-incorrect").innerText = incorrectCount;
+      document.getElementById("stat-score").innerText = `${percentage}%`;
+
+      document.getElementById("m1-summary-score").innerText = `${moduleCorrect.m1} / 3 Aciertos`;
+      document.getElementById("m2-summary-score").innerText = `${moduleCorrect.m2} / 3 Aciertos`;
+      document.getElementById("m3-summary-score").innerText = `${moduleCorrect.m3} / 2 Aciertos`;
+    }
+
+    function resetAllQuizzes() {
+      for (let member in userAnswers) delete userAnswers[member];
+      renderAllQuizzes();
+      updateGlobalMetrics();
+      switchTab('m1');
+    }
+  </script>
+</body>
+</html>
